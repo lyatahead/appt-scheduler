@@ -25,11 +25,8 @@ class DoctorControllerTest {
 
     @Test
     void createDoctor() {
-        Doctor testDoc = new Doctor("P", "Lee");
-        Doctor tempDoc = doctorController.createDoctor(testDoc);
+        Doctor tempDoc = doctorController.createDoctor(new Doctor("P", "Lee"));
         assertTrue(doctorRepository.findById(tempDoc.getId()).isPresent());
-        assertEquals(testDoc.getFirstName(), tempDoc.getFirstName());
-        assertEquals(testDoc.getLastName(), tempDoc.getLastName());
     }
 
     @Test
