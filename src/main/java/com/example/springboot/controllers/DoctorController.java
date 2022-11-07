@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.Doc;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +16,10 @@ import java.util.Optional;
 public class DoctorController {
     @Autowired
     DoctorRepository doctorRepository;
+
+    public DoctorController(@Autowired DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
+    }
 
     @PostMapping("/createDoctor")
     public Doctor createDoctor(@RequestBody Doctor doctor) {
