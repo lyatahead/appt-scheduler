@@ -40,4 +40,8 @@ public class AppointmentController {
     public void deleteAppointment(@PathVariable("id") Long id) {
         appointmentRepository.deleteById(id);
     }
+
+
+
+
 }

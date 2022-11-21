@@ -1,9 +1,12 @@
 package com.example.springboot.model;
 
+import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "Appointments")
@@ -15,14 +18,15 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "App_Date")
-    private String appDate;
+    @Column(name = "App_DateTime")
+    private Date appDateTime;
 
-    @Column(name = "App_Time")
-    private String appTime;
+    @Column(name = "Doctor_ID")
+    private int doctor_ID;
 
-    public Appointment(String appDate, String appTime) {
-        this.appDate = appDate;
-        this.appTime = appTime;
+    public Appointment(Date appDateTime, int doctor_ID) {
+        this.appDateTime = appDateTime;
+        this.doctor_ID = doctor_ID;
     }
+
 }

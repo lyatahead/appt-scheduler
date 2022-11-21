@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
@@ -31,8 +33,8 @@ public class AppointmentControllerIntegrationTest {
 
     MockMvc mockMvc;
 
-    Appointment testAppt1 = new Appointment("11/4/2022", "3:30");
-    Appointment testAppt2 = new Appointment("12/2/2022", "7:30");
+    Appointment testAppt1 = new Appointment(new Date(2022,12,15,9,30), 1);
+    Appointment testAppt2 = new Appointment(new Date(2022, 12, 5, 10, 45), 2);
 
     @BeforeEach
     void setUp() {
@@ -86,14 +88,14 @@ public class AppointmentControllerIntegrationTest {
     @Test
     @SneakyThrows
     void createAppointmentFail() {
-        Appointment testAppt = new Appointment(null, null);
+        Appointment testAppt = new Appointment(null, 0);
         appointmentRepository.save(testAppt);
         mockMvc.perform(post("/api/createAppointment")
                         .content(new ObjectMapper().writeValueAsString(testAppt))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.appDate", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.appTime", isEmptyOrNullString()));
+                .andExpect(jsonPath("$.appDateTime", isEmptyOrNullString()))
+                ;
     }
 
     @Test

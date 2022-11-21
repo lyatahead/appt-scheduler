@@ -108,4 +108,13 @@ class DoctorControllerIntegrationTest {
                 .andExpect(jsonPath("$.firstName", isEmptyOrNullString()))
                 .andExpect(jsonPath("$.lastName", isEmptyOrNullString()));
     }
+
+    @Test
+    @SneakyThrows
+    void deleteDoctorFail() {
+        mockMvc.perform(delete("/api/deleteDoctor/"))
+                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/deleteDoctor/" + null))
+                .andExpect(status().isBadRequest());
+    }
 }

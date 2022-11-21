@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,8 +19,8 @@ public class AppointmentControllerTest {
     @Autowired
     AppointmentController appointmentController;
 
-    Appointment testAppt = new Appointment("12/12/2022", "8:45");
-    Appointment testAppt2 = new Appointment("12/05/2022", "8:30");
+    Appointment testAppt1 = new Appointment(new Date(2022,12,15,9,30),1);
+    Appointment testAppt2 = new Appointment(new Date(2022, 12, 5, 10, 45),2);
 
     @BeforeEach
     void setUp() {
@@ -28,14 +29,14 @@ public class AppointmentControllerTest {
 
     @Test
     void createAppointment() {
-        Appointment testAppt = appointmentController.createAppointment(new Appointment("12/02/2022", "8:40"));
+        Appointment testAppt = appointmentController.createAppointment(new Appointment(new Date(2022, 12, 5, 10, 45),2));
         assertTrue(appointmentRepository.findById(testAppt.getId()).isPresent());
     }
 
     @Test
     void getAllAppointments() {
         assertTrue(appointmentController.getAllAppointments().isEmpty());
-        appointmentRepository.save(testAppt);
+        appointmentRepository.save(testAppt1);
         assertFalse(appointmentController.getAllAppointments().isEmpty());
         appointmentRepository.save(testAppt2);
         assertEquals(2, appointmentController.getAllAppointments().size());
@@ -53,8 +54,8 @@ public class AppointmentControllerTest {
 
     @Test
     void deleteAppointment() {
-        appointmentRepository.save(testAppt);
-        appointmentController.deleteAppointment(testAppt.getId());
-        assertTrue(appointmentRepository.findById(testAppt.getId()).isEmpty());
+        appointmentRepository.save(testAppt1);
+        appointmentController.deleteAppointment(testAppt1.getId());
+        assertTrue(appointmentRepository.findById(testAppt1.getId()).isEmpty());
     }
 }
