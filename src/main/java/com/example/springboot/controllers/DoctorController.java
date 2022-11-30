@@ -35,5 +35,8 @@ public class DoctorController {
     public Optional<Doctor> getSpecificDoctor(@PathVariable(name = "id") Long id) {
         return doctorRepository.findById(id);
     }
-
+    @DeleteMapping("/deleteDoctor/{id}")
+    public void deleteDoctor(@PathVariable("id") Long id) {
+        doctorRepository.deleteById(id);
+    }
 }
