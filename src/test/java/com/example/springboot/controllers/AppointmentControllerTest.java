@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Date;
 import java.util.Optional;
 
@@ -18,9 +20,11 @@ public class AppointmentControllerTest {
     AppointmentRepository appointmentRepository;
     @Autowired
     AppointmentController appointmentController;
+    LocalDate dateTime1 = LocalDate.of(2022, Month.DECEMBER, 12);
+    LocalDate dateTime2 = LocalDate.of(2022, Month.DECEMBER, 20);
 
-    Appointment testAppt1 = new Appointment(new Date(2022,12,15,9,30),1);
-    Appointment testAppt2 = new Appointment(new Date(2022, 12, 5, 10, 45),2);
+    Appointment testAppt1 = new Appointment(dateTime1,1);
+    Appointment testAppt2 = new Appointment(dateTime2,2);
 
     @BeforeEach
     void setUp() {
@@ -29,7 +33,8 @@ public class AppointmentControllerTest {
 
     @Test
     void createAppointment() {
-        Appointment testAppt = appointmentController.createAppointment(new Appointment(new Date(2022, 12, 5, 10, 45),2));
+        LocalDate dateTime = LocalDate.of(2022, Month.DECEMBER, 15);
+        Appointment testAppt = appointmentController.createAppointment(new Appointment(dateTime2,1));
         assertTrue(appointmentRepository.findById(testAppt.getId()).isPresent());
     }
 

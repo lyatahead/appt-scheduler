@@ -1,7 +1,7 @@
 package com.example.springboot.controllers;
 
-import com.example.springboot.model.Appointment;
-import com.example.springboot.repository.AppointmentRepository;
+import com.example.springboot.model.Patient;
+import com.example.springboot.repository.PatientRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,41 +26,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-public class AppointmentControllerIntegrationTest {
+public class PatientControllerIntegrationTest {
     @Autowired
-    AppointmentController appointmentController;
+    PatientController patientController;
     @Autowired
-    AppointmentRepository appointmentRepository;
+    PatientRepository patientRepository;
 
     MockMvc mockMvc;
 
-    LocalDate dateTime1 = LocalDate.of(2022, Month.DECEMBER, 12);
-    LocalDate dateTime2 = LocalDate.of(2022, Month.DECEMBER, 20);
-
-    Appointment testAppt1 = new Appointment(dateTime1, 1);
-    Appointment testAppt2 = new Appointment(dateTime2, 2);
+    LocalDate dateTime1 = LocalDate.of(1975, Month.APRIL, 12);
+    LocalDate dateTime2 = LocalDate.of(1988, Month.JULY, 22);
+    Patient testPatient = new Patient("Amy", "Do", dateTime1, "1234 Creek Atlanta, GA 30033", "6786226014");
+    Patient testPatient2 = new Patient("Louie", "P", dateTime2, "6551 Martin Atlanta, GA 30033", "6786226014");
 
     @BeforeEach
     void setUp() {
-        appointmentController = new AppointmentController(appointmentRepository);
-        mockMvc = MockMvcBuilders.standaloneSetup(appointmentController).build();
-        appointmentRepository.save(testAppt1);
-        appointmentRepository.save(testAppt2);
+        patientController = new PatientController(patientRepository);
+        mockMvc = MockMvcBuilders.standaloneSetup(patientController).build();
+        patientRepository.save(testPatient);
+        patientRepository.save(testPatient2);
     }
 
     @Test
     void contextLoads() {
-        assertThat(appointmentController).isNotNull();
+        assertThat(patientController).isNotNull();
     }
 
     @Test
     @SneakyThrows
-    void createAppointment()  {
-        appointmentRepository.save(testAppt1);
+    void createPatient()  {
+        patientRepository.save(testPatient2);
         ObjectMapper mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
-        MvcResult result = mockMvc.perform(post("/api/createAppointment")
-                        .content(mapper.writeValueAsString(testAppt1))
+        MvcResult result = mockMvc.perform(post("/api/createPatient")
+                        .content(mapper.writeValueAsString(testPatient2))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -69,54 +68,54 @@ public class AppointmentControllerIntegrationTest {
 
     @Test
     @SneakyThrows
-    void getAppointments()  {
-        mockMvc.perform(get("/api/appointmentsList"))
+    void getPatients()  {
+        mockMvc.perform(get("/api/patientsList"))
                 .andExpect(status().isOk())
-                .andExpect(mvcResult -> jsonPath("$[0].id", is(testAppt1.getId()
+                .andExpect(mvcResult -> jsonPath("$[0].id", is(testPatient.getId()
                 )))
-                .andExpect(mvcResult -> jsonPath("$[1].id", is(testAppt2.getId())));
+                .andExpect(mvcResult -> jsonPath("$[1].id", is(testPatient2.getId())));
     }
 
     @Test
     @SneakyThrows
-    void getSpecificAppointment() {
-        mockMvc.perform(get("/api/appointment/{id}", testAppt1.getId()))
+    void getSpecificPatient() {
+        mockMvc.perform(get("/api/patient/{id}", testPatient.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
     @SneakyThrows
-    void deleteAppointment() {
-        mockMvc.perform(delete("/api/deleteAppointment/{id}", testAppt1.getId()))
+    void deletePatient() {
+        mockMvc.perform(delete("/api/deletePatient/{id}", testPatient.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
     @SneakyThrows
-    void createAppointmentFail() {
-        Appointment testAppt = new Appointment(null, 0);
-        appointmentRepository.save(testAppt);
-        mockMvc.perform(post("/api/createAppointment")
-                        .content(new ObjectMapper().writeValueAsString(testAppt))
+    void createPatientFail() {
+        Patient tempPatient = new Patient(null, null, null, null, null);
+        patientRepository.save(testPatient);
+        mockMvc.perform(post("/api/createPatient")
+                        .content(new ObjectMapper().writeValueAsString(tempPatient))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.appDate", isEmptyOrNullString()))
-                ;
+                .andExpect(jsonPath("$.dateOfBirth", isEmptyOrNullString()))
+        ;
     }
 
     @Test
     @SneakyThrows
-    void getSpecificAppointmentFail() {
-        mockMvc.perform(get("/api/appointment/" + null))
+    void getSpecificPatientFail() {
+        mockMvc.perform(get("/api/patient/" + null))
                 .andExpect(status().isBadRequest());
-        mockMvc.perform(get("/api/appointment/"))
+        mockMvc.perform(get("/api/patient/"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @SneakyThrows
-    void getAppointmentsFail() {
-        mockMvc.perform(get("/api/appointmentsList"))
+    void getPatientsFail() {
+        mockMvc.perform(get("/api/patientsList"))
                 .andExpect(status().isOk())
                 .andExpect(mvcResult -> jsonPath("$", hasSize(0)))
                 .andExpect(mvcResult -> jsonPath("$[0].id").isEmpty())
@@ -125,10 +124,10 @@ public class AppointmentControllerIntegrationTest {
 
     @Test
     @SneakyThrows
-    void deleteAppointmentFail() {
-        mockMvc.perform(delete("/api/deleteAppointment/"))
+    void deletePatientFail() {
+        mockMvc.perform(delete("/api/deletePatient/"))
                 .andExpect(status().isNotFound());
-        mockMvc.perform(delete("/api/deleteAppointment/" + null))
+        mockMvc.perform(delete("/api/deletePatient/" + null))
                 .andExpect(status().isBadRequest());
     }
 }

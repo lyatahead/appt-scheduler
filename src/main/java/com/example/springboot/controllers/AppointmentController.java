@@ -1,12 +1,14 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.model.Appointment;
+import com.example.springboot.model.Patient;
 import com.example.springboot.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -41,7 +43,14 @@ public class AppointmentController {
         appointmentRepository.deleteById(id);
     }
 
-
+    @PutMapping("/updateAppointment/{id}")
+    public Appointment updateAppointment(@PathVariable("id") Long id, @RequestBody Appointment updateAppointment) {
+        Appointment tempAppointment = appointmentRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        tempAppointment.setAppDate(updateAppointment.getAppDate());
+        tempAppointment.setDoctor_ID(updateAppointment.getDoctor_ID());
+        return appointmentRepository.save(tempAppointment);
+    }
 
 
 }
