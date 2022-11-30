@@ -63,4 +63,12 @@ public class AppointmentControllerTest {
         appointmentController.deleteAppointment(testAppt1.getId());
         assertTrue(appointmentRepository.findById(testAppt1.getId()).isEmpty());
     }
+
+    @Test
+    void updateAppointment() {
+        appointmentRepository.save(testAppt2);
+        Appointment tempApt = new Appointment(dateTime1, 2);
+        appointmentController.updateAppointment(testAppt2.getId(), tempApt);
+        assertEquals(dateTime1, appointmentRepository.findById(testAppt2.getId()).get().getAppDate());
+    }
 }

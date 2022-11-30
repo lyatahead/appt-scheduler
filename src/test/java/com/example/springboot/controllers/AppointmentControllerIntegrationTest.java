@@ -81,7 +81,8 @@ public class AppointmentControllerIntegrationTest {
     @SneakyThrows
     void getSpecificAppointment() {
         mockMvc.perform(get("/api/appointment/{id}", testAppt1.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].id", is(testAppt1.getId())));
     }
 
     @Test
@@ -93,6 +94,22 @@ public class AppointmentControllerIntegrationTest {
 
     @Test
     @SneakyThrows
+    void updateAppointment() {
+        appointmentRepository.save(testAppt1);
+        Appointment tempApt = new Appointment(dateTime2, 1);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
+        MvcResult result = mockMvc.perform(put("/api/updateAppointment/{id}", testAppt1.getId())
+                        .content(mapper.writeValueAsString(tempApt))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].appDate", is(tempApt.getAppDate())))
+                .andReturn();
+        assertNotNull(result);
+    }
+
+    @Test
+    @SneakyThrows
     void createAppointmentFail() {
         Appointment testAppt = new Appointment(null, 0);
         appointmentRepository.save(testAppt);
@@ -100,8 +117,7 @@ public class AppointmentControllerIntegrationTest {
                         .content(new ObjectMapper().writeValueAsString(testAppt))
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.appDate", isEmptyOrNullString()))
-                ;
+                .andExpect(jsonPath("$.appDate", isEmptyOrNullString()));
     }
 
     @Test
@@ -130,5 +146,20 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isNotFound());
         mockMvc.perform(delete("/api/deleteAppointment/" + null))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateAppointmentFail() {
+        appointmentRepository.save(testAppt1);
+        Appointment tempApt = new Appointment(null, 1);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
+        MvcResult result = mockMvc.perform(put("/api/updateAppointment/{id}", testAppt1.getId())
+                        .content(mapper.writeValueAsString(tempApt))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.appDate", isEmptyOrNullString()))
+                .andReturn();
     }
 }

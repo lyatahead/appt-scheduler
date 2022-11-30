@@ -13,9 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
@@ -40,7 +37,8 @@ class DoctorControllerIntegrationTest {
     public void setup() {
         doctorController = new DoctorController(doctorRepository);
         mockMvc = MockMvcBuilders.standaloneSetup(doctorController).build();
-        doctorRepository.deleteAll();
+        doctorRepository.save(testDoc1);
+        doctorRepository.save(testDoc2);
     }
 
     @Test
@@ -74,7 +72,29 @@ class DoctorControllerIntegrationTest {
     @SneakyThrows
     void getSpecificDoctor() {
         mockMvc.perform(get("/api/doctor/{id}", testDoc1.getId() ))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].id", is(testDoc1.getId())));
+    }
+
+    @Test
+    @SneakyThrows
+    void deleteDoctor() {
+        mockMvc.perform(delete("/api/deleteDoctor/{id}", testDoc1.getId()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateDoctor() {
+        doctorRepository.save(testDoc2);
+        Doctor tempDoct = new Doctor("El", "Song");
+        MvcResult result = mockMvc.perform(put("/api/updateDoctor/{id}", testDoc2.getId())
+                .content(new ObjectMapper().writeValueAsString(tempDoct))
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].lastName", is(tempDoct.getLastName())))
+                .andReturn();
+        assertNotNull(result);
     }
 
     @Test
@@ -116,5 +136,19 @@ class DoctorControllerIntegrationTest {
                 .andExpect(status().isNotFound());
         mockMvc.perform(delete("/api/deleteDoctor/" + null))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateDoctorFail() {
+        doctorRepository.save(testDoc2);
+        Doctor tempDoct = new Doctor("El", null);
+        MvcResult result = mockMvc.perform(put("/api/updateDoctor/{id}", testDoc2.getId())
+                        .content(new ObjectMapper().writeValueAsString(tempDoct))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].lastName", isEmptyOrNullString()))
+                .andReturn();
+        assertNotNull(result);
     }
 }

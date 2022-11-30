@@ -60,4 +60,11 @@ public class PatientControllerTest {
         assertTrue(patientRepository.findById(testPatient.getId()).isEmpty());
     }
 
+    @Test
+    void updatePatient() {
+        patientRepository.save(testPatient);
+        Patient tempPatient = new Patient("Amy", "Do", dateTime1, "1234 Creek Atlanta, GA 30033", "6786226015");
+        patientController.updatePatient(testPatient.getId(), tempPatient);
+        assertEquals("6786226015", patientRepository.findById(testPatient.getId()).get().getPhoneNumber());
+    }
 }

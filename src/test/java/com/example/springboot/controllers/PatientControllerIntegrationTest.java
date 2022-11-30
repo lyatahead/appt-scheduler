@@ -80,7 +80,8 @@ public class PatientControllerIntegrationTest {
     @SneakyThrows
     void getSpecificPatient() {
         mockMvc.perform(get("/api/patient/{id}", testPatient.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].id", is(testPatient.getId())));
     }
 
     @Test
@@ -88,6 +89,22 @@ public class PatientControllerIntegrationTest {
     void deletePatient() {
         mockMvc.perform(delete("/api/deletePatient/{id}", testPatient.getId()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    void updatePatient() {
+        patientRepository.save(testPatient2);
+        Patient tempPatient = new Patient("Amy", "Do", dateTime1, "1234 Creek Atlanta, GA 30033", "6786226015");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
+        MvcResult result =  mockMvc.perform(put("/api/updatePatient/{id}", testPatient2.getId())
+                        .content(mapper.writeValueAsString(tempPatient))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].phoneNumber", is(tempPatient.getPhoneNumber())))
+                .andReturn();
+        assertNotNull(result);
     }
 
     @Test
@@ -100,6 +117,10 @@ public class PatientControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.dateOfBirth", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.firstName", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.lastName", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.address", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.phoneNumber", isEmptyOrNullString()))
         ;
     }
 
@@ -130,4 +151,23 @@ public class PatientControllerIntegrationTest {
         mockMvc.perform(delete("/api/deletePatient/" + null))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @SneakyThrows
+    void updatePatientFail() {
+        Patient tempPatient = new Patient(null, null, null, null, null);
+        patientRepository.save(testPatient);
+        mockMvc.perform(put("/api/updatePatient/{id}", testPatient.getId())
+                        .content(new ObjectMapper().writeValueAsString(tempPatient))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.dateOfBirth", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.firstName", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.lastName", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.address", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.phoneNumber", isEmptyOrNullString()))
+        ;
+    }
+
+
 }

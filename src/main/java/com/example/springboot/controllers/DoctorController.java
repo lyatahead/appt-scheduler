@@ -1,12 +1,14 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.model.Doctor;
+import com.example.springboot.model.Patient;
 import com.example.springboot.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -35,8 +37,18 @@ public class DoctorController {
     public Optional<Doctor> getSpecificDoctor(@PathVariable(name = "id") Long id) {
         return doctorRepository.findById(id);
     }
+
     @DeleteMapping("/deleteDoctor/{id}")
     public void deleteDoctor(@PathVariable("id") Long id) {
         doctorRepository.deleteById(id);
+    }
+
+    @PutMapping("/updateDoctor/{id}")
+    public Doctor updateDoctor(@PathVariable("id") Long id, @RequestBody Doctor updateDoctor) {
+        Doctor tempDoctor = doctorRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        tempDoctor.setFirstName(updateDoctor.getFirstName());
+        tempDoctor.setLastName(updateDoctor.getLastName());
+        return doctorRepository.save(tempDoctor);
     }
 }

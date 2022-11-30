@@ -55,4 +55,12 @@ class DoctorControllerTest {
         doctorController.deleteDoctor(testDoc.getId());
         assertTrue(doctorRepository.findById(testDoc.getId()).isEmpty());
     }
+
+    @Test
+    void updateDoctor() {
+        doctorRepository.save(testDoc2);
+        Doctor tempDoct = new Doctor("A", "Song");
+        doctorController.updateDoctor(testDoc2.getId(), tempDoct);
+        assertEquals("Song", doctorRepository.findById(testDoc2.getId()).get().getLastName());
+    }
 }

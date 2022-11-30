@@ -43,6 +43,9 @@ public class PatientController {
     public Patient updatePatient(@PathVariable("id") Long id, @RequestBody Patient updatePatient) {
         Patient tempPatient = patientRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
+        tempPatient.setFirstName(updatePatient.getFirstName());
+        tempPatient.setLastName(updatePatient.getLastName());
+        tempPatient.setDateOfBirth(updatePatient.getDateOfBirth());
         tempPatient.setAddress(updatePatient.getAddress());
         tempPatient.setPhoneNumber(updatePatient.getPhoneNumber());
         return patientRepository.save(tempPatient);
