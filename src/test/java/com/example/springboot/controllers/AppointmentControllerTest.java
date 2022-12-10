@@ -23,6 +23,7 @@ public class AppointmentControllerTest {
     LocalDate dateTime1 = LocalDate.of(2022, Month.DECEMBER, 12);
     LocalDate dateTime2 = LocalDate.of(2022, Month.DECEMBER, 20);
 
+    Appointment testAppt = new Appointment(dateTime2, 1);
     Appointment testAppt1 = new Appointment(dateTime1,1);
     Appointment testAppt2 = new Appointment(dateTime2,2);
 
@@ -70,5 +71,21 @@ public class AppointmentControllerTest {
         Appointment tempApt = new Appointment(dateTime1, 2);
         appointmentController.updateAppointment(testAppt2.getId(), tempApt);
         assertEquals(dateTime1, appointmentRepository.findById(testAppt2.getId()).get().getAppDate());
+    }
+
+    @Test
+    void getAppointmentsByDoctor() {
+        appointmentRepository.save(testAppt1);
+        appointmentRepository.save(testAppt);
+        appointmentController.getAppointmentsByDoctor(testAppt.getDoctorId());
+        assertEquals(2, appointmentController.getAppointmentsByDoctor(testAppt.getDoctorId()).size());
+    }
+
+    @Test
+    void deleteAppointmentByDoctor() {
+        appointmentRepository.save(testAppt);
+        assertFalse(appointmentRepository.findById(testAppt.getId()).isEmpty());
+        appointmentController.deleteAppointmentByDoctor(testAppt.getDoctorId());
+        assertTrue(appointmentRepository.findById(testAppt.getId()).isEmpty());
     }
 }

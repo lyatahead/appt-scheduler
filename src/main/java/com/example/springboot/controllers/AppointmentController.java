@@ -48,9 +48,17 @@ public class AppointmentController {
         Appointment tempAppointment = appointmentRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
         tempAppointment.setAppDate(updateAppointment.getAppDate());
-        tempAppointment.setDoctor_ID(updateAppointment.getDoctor_ID());
+        tempAppointment.setDoctorId(updateAppointment.getDoctorId());
         return appointmentRepository.save(tempAppointment);
     }
 
+    @GetMapping("/appointmentsByDoctor/{doctorId}")
+    public List<Appointment> getAppointmentsByDoctor(@PathVariable(name = "doctorId") int doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId);
+    }
 
+    @DeleteMapping("/deleteAppointmentByDoctor/{doctorId}")
+    public void deleteAppointmentByDoctor(@PathVariable("doctorId") int doctorId) {
+        appointmentRepository.deleteByDoctorId(doctorId);
+    }
 }

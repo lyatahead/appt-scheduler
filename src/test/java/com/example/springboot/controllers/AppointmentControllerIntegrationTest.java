@@ -110,6 +110,21 @@ public class AppointmentControllerIntegrationTest {
 
     @Test
     @SneakyThrows
+    void getAppointmentsByDoctor() {
+        mockMvc.perform(get("/api/appointmentsByDoctor/{doctorId}", testAppt2.getDoctorId()))
+                .andExpect(status().isOk())
+                .andExpect(mvcResult -> jsonPath("$[0].doctorId", is(testAppt2.getDoctorId())));
+    }
+
+    @Test
+    @SneakyThrows
+    void deleteAppointmentByDoctor() {
+        mockMvc.perform(delete("/api/deleteAppointmentByDoctor/{doctorId}", testAppt1.getDoctorId()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
     void createAppointmentFail() {
         Appointment testAppt = new Appointment(null, 0);
         appointmentRepository.save(testAppt);
@@ -141,6 +156,24 @@ public class AppointmentControllerIntegrationTest {
 
     @Test
     @SneakyThrows
+    void getAppointmentsByDoctorFail() {
+        mockMvc.perform(get("/api/appointmentsByDoctor/" + null))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(get("/api/appointmentsByDoctor/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
+    void deleteAppointmentByDoctorFail() {
+        mockMvc.perform(delete("/api/deleteAppointmentByDoctor/" + null))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(delete("/api/deleteAppointmentByDoctor/"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
     void deleteAppointmentFail() {
         mockMvc.perform(delete("/api/deleteAppointment/"))
                 .andExpect(status().isNotFound());
@@ -162,4 +195,6 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(jsonPath("$.appDate", isEmptyOrNullString()))
                 .andReturn();
     }
+
+
 }

@@ -16,7 +16,7 @@ import java.time.*;
 public class Patient {
     @Id
     @Column(name = "Patient_ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "First_Name")

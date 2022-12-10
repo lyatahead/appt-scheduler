@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findAll();
     Optional<Doctor> findById(Long id);
+    List<Doctor> findByLastName(String lastName);
 }

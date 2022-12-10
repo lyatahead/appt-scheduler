@@ -16,18 +16,18 @@ import java.time.*;
 public class Appointment {
     @Id
     @Column(name = "Appointment_ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "App_Date")
     private LocalDate appDate;
 
     @Column(name = "Doctor_ID")
-    private int doctor_ID;
+    private int doctorId;
 
-    public Appointment(LocalDate appDate, int doctor_ID) {
+    public Appointment(LocalDate appDate, int doctorId) {
         this.appDate = appDate;
-        this.doctor_ID = doctor_ID;
+        this.doctorId = doctorId;
     }
 
 }

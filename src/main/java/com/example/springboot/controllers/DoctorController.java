@@ -1,7 +1,6 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.model.Doctor;
-import com.example.springboot.model.Patient;
 import com.example.springboot.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,4 +50,10 @@ public class DoctorController {
         tempDoctor.setLastName(updateDoctor.getLastName());
         return doctorRepository.save(tempDoctor);
     }
+    @GetMapping("/doctorByName/{lastName}")
+    public List<Doctor> getDoctorByLastName(@PathVariable(name = "lastName") String lastName) {
+        return doctorRepository.findByLastName(lastName);
+    }
+
+
 }
