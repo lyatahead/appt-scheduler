@@ -50,10 +50,5 @@ public class DoctorController {
         tempDoctor.setLastName(updateDoctor.getLastName());
         return doctorRepository.save(tempDoctor);
     }
-    @GetMapping("/doctorByName/{lastName}")
-    public List<Doctor> getDoctorByLastName(@PathVariable(name = "lastName") String lastName) {
-        return doctorRepository.findByLastName(lastName);
-    }
-
 
 }

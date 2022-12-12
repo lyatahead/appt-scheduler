@@ -1,7 +1,6 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.model.Appointment;
-import com.example.springboot.model.Patient;
 import com.example.springboot.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 

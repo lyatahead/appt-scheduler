@@ -63,4 +63,5 @@ class DoctorControllerTest {
         doctorController.updateDoctor(testDoc2.getId(), tempDoct);
         assertEquals("Song", doctorRepository.findById(testDoc2.getId()).get().getLastName());
     }
+
 }
