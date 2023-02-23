@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 import java.util.Date;
+import java.time.*;
 
 @Entity
 @Table(name = "Appointments")
@@ -15,18 +16,18 @@ import java.util.Date;
 public class Appointment {
     @Id
     @Column(name = "Appointment_ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "App_DateTime")
-    private Date appDateTime;
+    @Column(name = "App_Date")
+    private LocalDate appDate;
 
     @Column(name = "Doctor_ID")
-    private int doctor_ID;
+    private int doctorId;
 
-    public Appointment(Date appDateTime, int doctor_ID) {
-        this.appDateTime = appDateTime;
-        this.doctor_ID = doctor_ID;
+    public Appointment(LocalDate appDate, int doctorId) {
+        this.appDate = appDate;
+        this.doctorId = doctorId;
     }
 
 }
