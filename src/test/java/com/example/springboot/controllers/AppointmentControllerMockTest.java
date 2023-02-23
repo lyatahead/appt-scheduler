@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * These are mockito tests for the controller
+ */
 @ExtendWith(MockitoExtension.class)
 public class AppointmentControllerMockTest {
     @Mock
@@ -34,6 +37,9 @@ public class AppointmentControllerMockTest {
     Appointment testAppt2 = new Appointment(dateTime2,2);
     List<Appointment> appointments = new ArrayList<>();
 
+    /**
+     * Adding test appointments before each test
+     */
     @BeforeEach
     void setUp() {
         appointments.add(testAppt);
@@ -41,6 +47,9 @@ public class AppointmentControllerMockTest {
         appointments.add(testAppt2);
     }
 
+    /**
+     * When the repository is called to find all appointments, then the controller's get all appointments method should be called
+     */
     @Test
     void getAllAppointments() {
         when(appointmentRepository.findAll()).thenReturn(appointments);
@@ -49,6 +58,9 @@ public class AppointmentControllerMockTest {
         assertEquals(3, appointmentController.getAllAppointments().size());
     }
 
+    /**
+     * When the repository is called to find an appointment by ID, then the controller's get specific appointment method should be called
+     */
     @Test
     void getAppointmentById() {
         when(appointmentRepository.findById(testAppt.getId())).thenReturn(Optional.of(testAppt));
@@ -57,6 +69,9 @@ public class AppointmentControllerMockTest {
         assertEquals(testAppt, tempApt.get());
     }
 
+    /**
+     * When the repository is called to save an appointment, then the controller's create appointment method should be called
+     */
     @Test
     void createAppointment() {
         when(appointmentRepository.save(testAppt1)).thenReturn(testAppt1);
@@ -65,6 +80,9 @@ public class AppointmentControllerMockTest {
         assertEquals(testAppt1, tempApt);
     }
 
+    /**
+     * When the repository is called to save an updated appointment, then the controller's update apppointment method should be called
+     */
     @Test
     void updateAppointment() {
         Appointment updateApt = new Appointment(dateTime1,2);
@@ -75,6 +93,9 @@ public class AppointmentControllerMockTest {
         assertEquals(updateApt.getAppDate(), testAppt2.getAppDate());
     }
 
+    /**
+     * If the controller's delete appointment method is called, then verify if repository is called to delete an appointment
+     */
     @Test
     void deleteAppointment() {
         appointmentController.deleteAppointment(testAppt2.getId());
@@ -82,6 +103,9 @@ public class AppointmentControllerMockTest {
         assertTrue(appointmentRepository.findById(testAppt2.getId()).isEmpty());
     }
 
+    /**
+     * When repository is called to find appointments by doctor ID, then controller's get appointments by doctor method should be called
+     */
     @Test
     void getAppointmentsByDoctor() {
         when(appointmentRepository.findByDoctorId(testAppt.getDoctorId())).thenReturn(appointments);
@@ -90,6 +114,9 @@ public class AppointmentControllerMockTest {
         assertFalse(appointmentController.getAppointmentsByDoctor(testAppt.getDoctorId()).isEmpty());
     }
 
+    /**
+     * When controller's delete appointment by doctor ID is called, then verify if repository is called to delete an appointment by doctor ID
+     */
     @Test
     void deleteAppointmentByDoctor() {
         appointmentController.deleteAppointmentByDoctor(testAppt.getDoctorId());

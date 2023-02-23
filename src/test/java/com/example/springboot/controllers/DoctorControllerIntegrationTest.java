@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+/**
+ * These are mock mvc tests
+ */
 @SpringBootTest
 class DoctorControllerIntegrationTest {
     @Autowired
@@ -33,6 +36,9 @@ class DoctorControllerIntegrationTest {
     Doctor testDoc1 = new Doctor("Jo", "E");
     Doctor testDoc2 = new Doctor("El", "P");
 
+    /**
+     * Build controller and save test doctors before test
+     */
     @BeforeEach
     public void setup() {
         doctorController = new DoctorController(doctorRepository);
@@ -41,11 +47,15 @@ class DoctorControllerIntegrationTest {
         doctorRepository.save(testDoc2);
     }
 
+
     @Test
     public void contextLoads() {
         assertThat(doctorController).isNotNull();
     }
 
+    /**
+     * Test to mock POST request method of creating a doctor
+     */
     @Test
     @SneakyThrows
     void createDoctor()  {
@@ -58,6 +68,9 @@ class DoctorControllerIntegrationTest {
         assertNotNull(result);
     }
 
+    /**
+     * Test to mock GET request method of getting all doctors
+     */
     @Test
     @SneakyThrows
     void getDoctors()  {
@@ -68,6 +81,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[1].id", is(testDoc2.getId())));
     }
 
+    /**
+     * Test to mock GET request method of getting a specific doctor by the doctor ID
+     */
     @Test
     @SneakyThrows
     void getSpecificDoctor() {
@@ -76,6 +92,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[0].id", is(testDoc1.getId())));
     }
 
+    /**
+     * Test to mock DELETE request method of deleting a doctor by the doctor ID
+     */
     @Test
     @SneakyThrows
     void deleteDoctor() {
@@ -83,6 +102,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test to mock PUT request method of updating a doctor
+     */
     @Test
     @SneakyThrows
     void updateDoctor() {
@@ -97,6 +119,9 @@ class DoctorControllerIntegrationTest {
         assertNotNull(result);
     }
 
+    /**
+     * Test to mock a FAILED GET request method of getting all doctors
+     */
     @Test
     @SneakyThrows
     void getDoctorsFail() {
@@ -107,6 +132,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[1].id").isEmpty());
     }
 
+    /**
+     * Test to mock a FAILED GET request method of getting a specific doctor by the doctor ID
+     */
     @Test
     @SneakyThrows
     void getSpecificDoctorFail() {
@@ -116,6 +144,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Test to mock a FAILED POST request method of creating a doctor
+     */
     @Test
     @SneakyThrows
     void createDoctorFail() {
@@ -129,6 +160,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(jsonPath("$.lastName", isEmptyOrNullString()));
     }
 
+    /**
+     * Test to mock a FAILED DELETE request method of deleting a doctor by the doctor ID
+     */
     @Test
     @SneakyThrows
     void deleteDoctorFail() {
@@ -138,6 +172,9 @@ class DoctorControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Test to mock a FAILED PUT request method of updating a doctor
+     */
     @Test
     @SneakyThrows
     void updateDoctorFail() {

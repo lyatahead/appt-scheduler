@@ -22,26 +22,53 @@ public class DoctorController {
         this.doctorRepository = doctorRepository;
     }
 
+    /**
+     * Create the doctor object
+     * @param doctor
+     * @return save the doctor into the repository
+     */
     @PostMapping("/createDoctor")
     public Doctor createDoctor(@RequestBody Doctor doctor) {
         return doctorRepository.save(doctor);
     }
 
+    /**
+     * Get a list of all the doctors in the repository
+     * @return the doctor objects
+     */
     @GetMapping("/doctorsList")
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
 
+    /**
+     * Get specific doctor by their doctor ID
+     * @param id
+     * @return the doctor object
+     */
     @GetMapping("/doctor/{id}")
     public Optional<Doctor> getSpecificDoctor(@PathVariable(name = "id") Long id) {
+        if (!this.doctorRepository.findById(id).isPresent()) {
+            throw new NoSuchElementException();
+        }
         return doctorRepository.findById(id);
     }
 
+    /**
+     * Delete the doctor by their doctor ID
+     * @param id
+     */
     @DeleteMapping("/deleteDoctor/{id}")
     public void deleteDoctor(@PathVariable("id") Long id) {
         doctorRepository.deleteById(id);
     }
 
+    /**
+     * Update the doctor in the repository by their doctor ID and body of API request
+     * @param id
+     * @param updateDoctor
+     * @return save the updated doctor in the repository
+     */
     @PutMapping("/updateDoctor/{id}")
     public Doctor updateDoctor(@PathVariable("id") Long id, @RequestBody Doctor updateDoctor) {
         Doctor tempDoctor = doctorRepository.findById(id)

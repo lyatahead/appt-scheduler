@@ -18,13 +18,15 @@ import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * These are mock mvc tests
+ */
 @SpringBootTest
 public class PatientControllerIntegrationTest {
     @Autowired
@@ -39,6 +41,9 @@ public class PatientControllerIntegrationTest {
     Patient testPatient = new Patient("Amy", "Do", dateTime1, "1234 Creek Atlanta, GA 30033", "6786226014");
     Patient testPatient2 = new Patient("Louie", "P", dateTime2, "6551 Martin Atlanta, GA 30033", "6786226014");
 
+    /**
+     * Build controller and save test patients before test
+     */
     @BeforeEach
     void setUp() {
         patientController = new PatientController(patientRepository);
@@ -52,6 +57,9 @@ public class PatientControllerIntegrationTest {
         assertThat(patientController).isNotNull();
     }
 
+    /**
+     * Test to mock POST request method of creating a patient
+     */
     @Test
     @SneakyThrows
     void createPatient()  {
@@ -60,12 +68,15 @@ public class PatientControllerIntegrationTest {
         mapper.findAndRegisterModules();
         MvcResult result = mockMvc.perform(post("/api/createPatient")
                         .content(mapper.writeValueAsString(testPatient2))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         assertNotNull(result);
     }
 
+    /**
+     * Test to mock GET request method of getting all patients
+     */
     @Test
     @SneakyThrows
     void getPatients()  {
@@ -76,6 +87,9 @@ public class PatientControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[1].id", is(testPatient2.getId())));
     }
 
+    /**
+     * Test to mock GET request method of getting a specific patient by the patient ID
+     */
     @Test
     @SneakyThrows
     void getSpecificPatient() {
@@ -84,6 +98,9 @@ public class PatientControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[0].id", is(testPatient.getId())));
     }
 
+    /**
+     * Test to mock DELETE request method of deleting a patient by the patient ID
+     */
     @Test
     @SneakyThrows
     void deletePatient() {
@@ -91,6 +108,9 @@ public class PatientControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test to mock PUT request method of updating a patient
+     */
     @Test
     @SneakyThrows
     void updatePatient() {
@@ -100,13 +120,16 @@ public class PatientControllerIntegrationTest {
         mapper.findAndRegisterModules();
         MvcResult result =  mockMvc.perform(put("/api/updatePatient/{id}", testPatient2.getId())
                         .content(mapper.writeValueAsString(tempPatient))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(mvcResult -> jsonPath("$[0].phoneNumber", is(tempPatient.getPhoneNumber())))
                 .andReturn();
         assertNotNull(result);
     }
 
+    /**
+     * Test to mock a FAILED POST request method of creating a patient
+     */
     @Test
     @SneakyThrows
     void createPatientFail() {
@@ -114,16 +137,19 @@ public class PatientControllerIntegrationTest {
         patientRepository.save(testPatient);
         mockMvc.perform(post("/api/createPatient")
                         .content(new ObjectMapper().writeValueAsString(tempPatient))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.dateOfBirth", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.firstName", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.lastName", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.address", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.phoneNumber", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.dateOfBirth", emptyOrNullString()))
+                .andExpect(jsonPath("$.firstName", emptyOrNullString()))
+                .andExpect(jsonPath("$.lastName", emptyOrNullString()))
+                .andExpect(jsonPath("$.address", emptyOrNullString()))
+                .andExpect(jsonPath("$.phoneNumber", emptyOrNullString()))
         ;
     }
 
+    /**
+     * Test to mock a FAILED GET request method of getting a specific patient by the patient ID
+     */
     @Test
     @SneakyThrows
     void getSpecificPatientFail() {
@@ -133,6 +159,9 @@ public class PatientControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Test to mock a FAILED GET request method of getting all patients
+     */
     @Test
     @SneakyThrows
     void getPatientsFail() {
@@ -143,6 +172,9 @@ public class PatientControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[1].id").isEmpty());
     }
 
+    /**
+     * Test to mock a FAILED DELETE request method of deleting a patient by the patient ID
+     */
     @Test
     @SneakyThrows
     void deletePatientFail() {
@@ -152,6 +184,9 @@ public class PatientControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Test to mock a FAILED PUT request method of updating a patient
+     */
     @Test
     @SneakyThrows
     void updatePatientFail() {
@@ -159,15 +194,14 @@ public class PatientControllerIntegrationTest {
         patientRepository.save(testPatient);
         mockMvc.perform(put("/api/updatePatient/{id}", testPatient.getId())
                         .content(new ObjectMapper().writeValueAsString(tempPatient))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.dateOfBirth", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.firstName", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.lastName", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.address", isEmptyOrNullString()))
-                .andExpect(jsonPath("$.phoneNumber", isEmptyOrNullString()))
+                .andExpect(jsonPath("$.dateOfBirth", emptyOrNullString()))
+                .andExpect(jsonPath("$.firstName", emptyOrNullString()))
+                .andExpect(jsonPath("$.lastName", emptyOrNullString()))
+                .andExpect(jsonPath("$.address", emptyOrNullString()))
+                .andExpect(jsonPath("$.phoneNumber", emptyOrNullString()))
         ;
     }
-
 
 }

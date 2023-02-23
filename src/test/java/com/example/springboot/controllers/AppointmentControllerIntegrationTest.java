@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * These are mock mvc tests
+ */
 @SpringBootTest
 public class AppointmentControllerIntegrationTest {
     @Autowired
@@ -40,6 +43,9 @@ public class AppointmentControllerIntegrationTest {
     Appointment testAppt1 = new Appointment(dateTime1, 1);
     Appointment testAppt2 = new Appointment(dateTime2, 2);
 
+    /**
+     * Build controller and save test appointments before test
+     */
     @BeforeEach
     void setUp() {
         appointmentController = new AppointmentController(appointmentRepository);
@@ -53,6 +59,9 @@ public class AppointmentControllerIntegrationTest {
         assertThat(appointmentController).isNotNull();
     }
 
+    /**
+     * Test to mock POST request method of creating an appointment
+     */
     @Test
     @SneakyThrows
     void createAppointment()  {
@@ -67,6 +76,9 @@ public class AppointmentControllerIntegrationTest {
         assertNotNull(result);
     }
 
+    /**
+     * Test to mock GET request method of getting all appointments
+     */
     @Test
     @SneakyThrows
     void getAppointments()  {
@@ -77,6 +89,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[1].id", is(testAppt2.getId())));
     }
 
+    /**
+     * Test to mock GET request method of getting a specific appointment by the appointment ID
+     */
     @Test
     @SneakyThrows
     void getSpecificAppointment() {
@@ -85,6 +100,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[0].id", is(testAppt1.getId())));
     }
 
+    /**
+     * Test to mock DELETE request method of deleting an appointment by the appointment ID
+     */
     @Test
     @SneakyThrows
     void deleteAppointment() {
@@ -92,6 +110,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test to mock PUT request method of updating an appointment
+     */
     @Test
     @SneakyThrows
     void updateAppointment() {
@@ -108,6 +129,9 @@ public class AppointmentControllerIntegrationTest {
         assertNotNull(result);
     }
 
+    /**
+     * Test to mock GET request method of getting appointments by the doctor ID
+     */
     @Test
     @SneakyThrows
     void getAppointmentsByDoctor() {
@@ -116,6 +140,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[0].doctorId", is(testAppt2.getDoctorId())));
     }
 
+    /**
+     * Test to mock DELETE request method of deleting appointments by doctor ID
+     */
     @Test
     @SneakyThrows
     void deleteAppointmentByDoctor() {
@@ -123,6 +150,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test to mock a FAILED POST request method of creating an appointment
+     */
     @Test
     @SneakyThrows
     void createAppointmentFail() {
@@ -135,6 +165,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(jsonPath("$.appDate", isEmptyOrNullString()));
     }
 
+    /**
+     * Test to mock a FAILED GET request method of getting a specific appointment by the appointment ID
+     */
     @Test
     @SneakyThrows
     void getSpecificAppointmentFail() {
@@ -144,6 +177,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Test to mock a FAILED GET request method of getting all appointments
+     */
     @Test
     @SneakyThrows
     void getAppointmentsFail() {
@@ -154,6 +190,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(mvcResult -> jsonPath("$[1].id").isEmpty());
     }
 
+    /**
+     * Test to mock FAILED GET request method of getting appointments by the doctor ID
+     */
     @Test
     @SneakyThrows
     void getAppointmentsByDoctorFail() {
@@ -163,6 +202,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Test to mock FAILED DELETE request method of deleting appointments by doctor ID
+     */
     @Test
     @SneakyThrows
     void deleteAppointmentByDoctorFail() {
@@ -172,6 +214,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Test to mock a FAILED DELETE request method of deleting an appointment by the appointment ID
+     */
     @Test
     @SneakyThrows
     void deleteAppointmentFail() {
@@ -181,6 +226,9 @@ public class AppointmentControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Test to mock a FAILED PUT request method of updating an appointment
+     */
     @Test
     @SneakyThrows
     void updateAppointmentFail() {

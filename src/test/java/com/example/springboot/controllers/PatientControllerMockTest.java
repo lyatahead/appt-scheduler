@@ -18,6 +18,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * These are mockito tests for the controller
+ */
 @ExtendWith(MockitoExtension.class)
 public class PatientControllerMockTest {
     @Mock
@@ -31,12 +34,18 @@ public class PatientControllerMockTest {
     Patient testPatient2 = new Patient("Louie", "P", dateTime2, "6551 Martin Atlanta, GA 30033", "6786226014");
     List<Patient> patients = new ArrayList<>();
 
+    /**
+     * Adding test patients before each test
+     */
     @BeforeEach
     void setUp() {
         patients.add(testPatient);
         patients.add(testPatient2);
     }
 
+    /**
+     * When the repository is called to find a patient by ID, then the controller's get specific patient method should be called
+     */
     @Test
     void getPatientById() {
         when(patientRepository.findById(testPatient.getId())).thenReturn(Optional.of(testPatient));
@@ -45,6 +54,9 @@ public class PatientControllerMockTest {
         assertEquals(testPatient, tempPatient.get());
     }
 
+    /**
+     * When the repository is called to find all patients, then the controller's get all patients method should be called
+     */
     @Test
     void getAllPatients() {
         when(patientRepository.findAll()).thenReturn(patients);
@@ -53,6 +65,9 @@ public class PatientControllerMockTest {
         assertEquals(2, patientController.getAllPatients().size());
     }
 
+    /**
+     * When the repository is called to save a patient, then the controller's create patient method should be called
+     */
     @Test
     void createPatient() {
         when(patientRepository.save(testPatient2)).thenReturn(testPatient2);
@@ -61,6 +76,9 @@ public class PatientControllerMockTest {
         assertEquals(testPatient2, tempPatient);
     }
 
+    /**
+     * When the repository is called to save an updated patient, then the controller's update patient method should be called
+     */
     @Test
     void updatePatient() {
         Patient updatePatient = new Patient("Louie", "P", dateTime2, "6551 Martin Atlanta, GA 30033", "6786226015");
@@ -71,6 +89,9 @@ public class PatientControllerMockTest {
         assertEquals(updatePatient.getPhoneNumber(), testPatient.getPhoneNumber());
     }
 
+    /**
+     * If the controller's delete patient method is called, then verify if repository is called to delete a patient
+     */
     @Test
     void deletePatient() {
         patientController.deletePatient(testPatient.getId());

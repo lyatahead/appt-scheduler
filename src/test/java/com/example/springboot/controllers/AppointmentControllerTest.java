@@ -13,6 +13,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * These are the generic functionality tests for the controller
+ */
+
 @SpringBootTest
 public class AppointmentControllerTest {
     @Autowired
@@ -26,11 +30,17 @@ public class AppointmentControllerTest {
     Appointment testAppt1 = new Appointment(dateTime1,1);
     Appointment testAppt2 = new Appointment(dateTime2,2);
 
+    /**
+     * Delete all in repository before test
+     */
     @BeforeEach
     void setUp() {
         appointmentRepository.deleteAll();
     }
 
+    /**
+     * Test for create appointment POST method. Test if appointment is present after creating.
+     */
     @Test
     void createAppointment() {
         LocalDate dateTime = LocalDate.of(2022, Month.DECEMBER, 15);
@@ -38,6 +48,9 @@ public class AppointmentControllerTest {
         assertTrue(appointmentRepository.findById(testAppt.getId()).isPresent());
     }
 
+    /**
+     * Test for get appointments GET method. Test if appointments are returned when controller is called
+     */
     @Test
     void getAllAppointments() {
         assertTrue(appointmentController.getAllAppointments().isEmpty());
@@ -48,6 +61,9 @@ public class AppointmentControllerTest {
 
     }
 
+    /**
+     * Test for get specific appointment GET method. Test if appointment with specific ID is present
+     */
     @Test
     void getSpecificAppointment() {
         appointmentRepository.save(testAppt2);
@@ -57,6 +73,9 @@ public class AppointmentControllerTest {
 
     }
 
+    /**
+     * Test for delete appointment DELETE method. Test if appointment deleted is not present when called
+     */
     @Test
     void deleteAppointment() {
         appointmentRepository.save(testAppt1);
@@ -64,6 +83,9 @@ public class AppointmentControllerTest {
         assertTrue(appointmentRepository.findById(testAppt1.getId()).isEmpty());
     }
 
+    /**
+     * Test for update appointment PUT method. Test if appointment is updated when controller is called
+     */
     @Test
     void updateAppointment() {
         appointmentRepository.save(testAppt2);
@@ -72,6 +94,9 @@ public class AppointmentControllerTest {
         assertEquals(dateTime1, appointmentRepository.findById(testAppt2.getId()).get().getAppDate());
     }
 
+    /**
+     * Test for specific appointment by doctor ID GET method. Test if appointments are returned when doctor ID is given
+     */
     @Test
     void getAppointmentsByDoctor() {
         appointmentRepository.save(testAppt1);
@@ -80,6 +105,9 @@ public class AppointmentControllerTest {
         assertEquals(2, appointmentController.getAppointmentsByDoctor(testAppt.getDoctorId()).size());
     }
 
+    /**
+     * Test for delete appointment by doctor ID DELETE method. Test if appointment is deleted when doctor ID is given
+     */
     @Test
     void deleteAppointmentByDoctor() {
         appointmentRepository.save(testAppt);
